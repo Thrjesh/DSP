@@ -1,87 +1,78 @@
 class Node:
     def __init__(self, data):
         self.data = data
-        self.prev = None
         self.next = None
 
 
-class DoublyLinkedList:
-
+class CircularLinkedList:
     def __init__(self):
         self.head = None
 
-    # Insert at the beginning
-    def insert_begin(self, data):
+    def append(self, data):
         new_node = Node(data)
 
-        if self.head is not None:
-            new_node.next = self.head
-            self.head.prev = new_node
-
-        self.head = new_node
-
-    def insert_end(self, data):
-        new_node = Node(data)
-
-        if self.head is None:
+        if not self.head:
             self.head = new_node
+            new_node.next = new_node
             return
 
-        temp = self.head
+        cur = self.head
+        while cur.next != self.head:
+            cur = cur.next
 
-        while temp.next is not None:
-            temp = temp.next
+        cur.next = new_node
+        new_node.next = self.head
 
-        temp.next = new_node
-        new_node.prev = temp
-
-    def insert_position(self, data, position):
-        new_node = Node(data)
-
-        if position == 1:
-            new_node.next = self.head
-
-            if self.head is not None:
-                self.head.prev = new_node
-
-            self.head = new_node
+    def delete(self, key):
+        if not self.head:
             return
 
-        temp = self.head
+        prev = None
+        cur = self.head
 
-        for i in range(1, position - 1):
-            if temp is None:
-                print("Invalid position")
+        while True:
+            if cur.data == key:
+
+                if cur.next == self.head and cur == self.head:
+                    self.head = None
+
+                elif cur == self.head:
+                    tail = self.head
+                    while tail.next != self.head:
+                        tail = tail.next
+
+                    self.head = cur.next
+                    tail.next = self.head
+
+                else:
+                    prev.next = cur.next
+
                 return
-            temp = temp.next
 
-        if temp is None:
-            print("Invalid position")
+            prev = cur
+            cur = cur.next
+
+            if cur == self.head:
+                break
+
+    def iterate(self):
+        if not self.head:
             return
 
-        new_node.next = temp.next
-        new_node.prev = temp
+        cur = self.head
 
-        if temp.next is not None:
-            temp.next.prev = new_node
+        while True:
+            print(cur.data)
+            cur = cur.next
 
-        temp.next = new_node
+            if cur == self.head:
+                break
 
-    def display(self):
-        temp = self.head
 
-        while temp is not None:
-            print(temp.data, end=" <-> ")
-            temp = temp.next
+cll = CircularLinkedList()
 
-        print("None")
+cll.append(10)
+cll.append(20)
+cll.append(30)
 
-dll = DoublyLinkedList()
-
-dll.insert_begin(20)
-dll.insert_begin(10)
-dll.insert_end(40)
-dll.insert_end(50)
-dll.insert_position(30, 3)
-
-dll.display()
+cll.iterate()
